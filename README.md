@@ -4,7 +4,7 @@
 
 **The backend that makes every Talise send gasless.**
 
-[Live app](https://app.talise.io) · [Frontend](https://github.com/talise-public/talise-frontend) · [Contracts](https://github.com/talise-public/talise-contracts) · [Mobile](https://github.com/talise-public/talise-mobile)
+[Website](https://talise.io) · [Frontend](https://github.com/talise-public/talise-frontend) · [Contracts](https://github.com/talise-public/talise-contracts) · [Mobile](https://github.com/talise-public/talise-mobile)
 
 </div>
 
