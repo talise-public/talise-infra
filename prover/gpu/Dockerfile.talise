@@ -1,0 +1,47 @@
+# Dockerfile.talise
+# -----------------------------------------------------------------------------
+# Hardening wrapper around the unconfirmedlabs/sui-zklogin-gpu-prover image.
+# Adds:
+#   - tini (PID 1, proper signal handling, reaps zombies)
+#   - HEALTHCHECK against /healthz so Docker / orchestrator can route around
+#     a stuck process
+#   - explicit non-root user is NOT applied here — the upstream image needs
+#     /workspace and /tmp writable for ICICLE-Snark's zkey copy-on-start, and
+#     ICICLE CLI wants raw access to the GPU device file. Confine via the host
+#     instead (seccomp / read-only rootfs is fine because we mount the zkey
+#     and tmp explicitly).
+#
+# Build context: a directory that contains *only this file*. The upstream
+# image is pulled from ghcr.io.
+#
+# Build:
+#   docker build -f Dockerfile.talise -t ghcr.io/seventhodyssey71/sui-zklogin-gpu-prover:v1 .
+#
+# Run (on a CUDA host with the NVIDIA Container Toolkit installed):
+#   docker run --rm --gpus all -p 8080:8080 \
+#     -v /opt/zkeys/zkLogin-main.zkey:/keys/zkLogin-main.zkey:ro \
+#     ghcr.io/seventhodyssey71/sui-zklogin-gpu-prover:v1
+# -----------------------------------------------------------------------------
+
+# Pin the upstream commit/tag here. The unconfirmedlabs repo doesn't yet
+# publish to ghcr — the deploy script builds the upstream image from source
+# on the GPU host, tags it `sui-zklogin-icicle-cuda:upstream`, then uses
+# THIS Dockerfile to layer hardening on top.
+ARG UPSTREAM_IMAGE=sui-zklogin-icicle-cuda:upstream
+FROM ${UPSTREAM_IMAGE}
+
+# tini for proper PID 1 behaviour. The upstream entrypoint is a bash script
+# that execs the Rust binary, so signal handling is already mostly OK, but
+# tini reaps any orphaned witness/proof worker processes if the binary panics.
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends tini curl \
+ && rm -rf /var/lib/apt/lists/*
+
+# Docker HEALTHCHECK — gives `docker ps` / orchestrators a clean signal when
+# the prover is wedged on a zkey load or the GPU has fallen off the bus.
+# 8s timeout because cold zkey load can stretch the first /healthz beyond
+# the default 30s start-period.
+HEALTHCHECK --interval=10s --timeout=8s --start-period=120s --retries=3 \
+  CMD curl -fsS http://127.0.0.1:8080/healthz || exit 1
+
+ENTRYPOINT ["/usr/bin/tini", "--", "/workspace/bin/zklogin-prover-entrypoint"]

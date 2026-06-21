@@ -34,11 +34,3 @@ lerna-debug.log*
 
 # Local deploy credentials — never commit
 .deploy.env
-
-# security hardening
-.dev.vars
-.dev.vars.*
-!.dev.vars.example
-*.p8
-*.pem
-*.key

@@ -1,0 +1,40 @@
+version: "3.8"
+
+# Self-hosted Sui zkLogin prover.
+# Run with:   docker compose -f prover/docker-compose.yml up -d
+# Health:     curl http://localhost:8001/ping
+# Proof endpoint that the web app talks to: http://localhost:8001/v1
+#
+# The zkey file (~3 GB) is downloaded by prover/download-zkey.sh into ./key.
+# That file is the mainnet zkLogin proving key — must be present before
+# the prover-fe service can start serving real requests.
+
+services:
+  prover:
+    image: mysten/zklogin:prover-stable
+    container_name: talise-zk-prover
+    restart: unless-stopped
+    environment:
+      - ZKEY=/key/zkLogin-main.zkey
+      - WITNESS_BINARIES=/app/binaries
+    volumes:
+      - ./key:/key:ro
+    # The rust prover is the heavy lifter — give it room.
+    deploy:
+      resources:
+        limits:
+          memory: 8G
+
+  prover-fe:
+    image: mysten/zklogin:prover-fe-stable
+    container_name: talise-zk-prover-fe
+    restart: unless-stopped
+    depends_on:
+      - prover
+    environment:
+      - PROVER_URI=http://prover:8080/input
+      - NODE_ENV=production
+      - DEBUG=zkLogin:info,jwks
+      - PROVER_TIMEOUT=45000
+    ports:
+      - "8001:8080"
