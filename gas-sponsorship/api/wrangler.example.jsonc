@@ -1,0 +1,19 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "onara",
+  "main": "src/workers.ts",
+  "compatibility_date": "2026-02-26",
+  "routes": [
+    {
+      "pattern": "onara.example.com",
+      "custom_domain": true
+    }
+  ],
+  // Optional: enable sponsorship analytics
+  // "analytics_engine_datasets": [
+  //   {
+  //     "binding": "ANALYTICS",
+  //     "dataset": "sponsorship"
+  //   }
+  // ]
+}

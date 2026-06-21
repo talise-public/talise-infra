@@ -1,0 +1,22 @@
+{
+  "name": "talise",
+  "enabled": true,
+  "gasBudgetMax": 20000000,
+  "maxCommands": 50,
+  "targets": [
+    "__TALISE_PACKAGE_ID__::send::*",
+    "__TALISE_PACKAGE_ID__::vault::*",
+    "__TALISE_PACKAGE_ID__::auto_swap::*",
+    "__TALISE_PACKAGE_ID__::receipt::*",
+    "0x4ba838c7ded1b57aededff4e825aa251858b05b720083856351dd8325094a13e::stream::*",
+    "0x4ba838c7ded1b57aededff4e825aa251858b05b720083856351dd8325094a13e::cheque::*"
+  ],
+  "allowedCommandKinds": [
+    "SplitCoins",
+    "MergeCoins",
+    "TransferObjects",
+    "MoveCall",
+    "MakeMoveVec",
+    "Upgrade"
+  ]
+}

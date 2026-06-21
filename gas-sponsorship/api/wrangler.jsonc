@@ -1,0 +1,29 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "talise-onara",
+  "main": "src/workers.ts",
+  "compatibility_date": "2026-02-26",
+  // The Cetus aggregator SDK pulls in `bn.js`, which lazily tries to
+  // `require("buffer")` inside a try/catch. With `nodejs_compat` on
+  // (paired with a compat date ≥ 2024-09-23) this resolves cleanly via
+  // workerd's built-in Node compat layer. Without the flag the require
+  // silently fails and BN keeps working in pure-JS mode — but enabling
+  // it makes the behavior deterministic across cold starts.
+  "compatibility_flags": ["nodejs_compat"],
+  "dev": {
+    "port": 8787
+  },
+  // Non-secret runtime vars. `SUI_MNEMONIC` is a secret and lives in
+  // Cloudflare's encrypted secret store — set via
+  // `wrangler secret put SUI_MNEMONIC` before the first deploy.
+  "vars": {
+    "SUI_NETWORK": "mainnet",
+    "SUI_GRPC_URL": "https://fullnode.mainnet.sui.io:443",
+    // Canonical Talise Move package id (public, on-chain — not a secret).
+    // Sponsor policy `targets` (::send::* / ::vault::* / ::auto_swap::* /
+    // ::receipt::*) are templated against this at request time. Without it
+    // set, the sponsor refuses every Talise tx. Verified on mainnet to
+    // expose exactly the send/vault/auto_swap/receipt modules.
+    "TALISE_PACKAGE_ID": "0xc74a7df07b4089d92f196d1db73ce0574db7f58ae0ba2b19b2a59d402958d394"
+  }
+}

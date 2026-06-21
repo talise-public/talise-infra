@@ -1,0 +1,14 @@
+# Onara gas-station — local dev env template
+# Copy to .dev.vars before `bun run dev`. NEVER commit the real one.
+
+# "mainnet" | "testnet"
+SUI_NETWORK=mainnet
+
+# Full-node gRPC endpoint
+SUI_GRPC_URL=https://fullnode.mainnet.sui.io:443
+
+# 12 or 24-word BIP-39 mnemonic for the sponsor wallet.
+# Generate with:
+#   node --input-type=module -e "import { Ed25519Keypair } from '@mysten/sui/keypairs/ed25519'; import { generateMnemonic } from '@scure/bip39'; import { wordlist } from '@scure/bip39/wordlists/english'; const m = generateMnemonic(wordlist); console.log(m, Ed25519Keypair.deriveKeypair(m).getPublicKey().toSuiAddress());"
+# Then fund that address with mainnet SUI (~1 SUI ≈ 200 sponsored txs at the 0.05 SUI policy cap).
+SUI_MNEMONIC="REPLACE_WITH_YOUR_TWELVE_OR_TWENTY_FOUR_WORD_MNEMONIC"
