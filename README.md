@@ -54,4 +54,4 @@ No secrets are committed. The signer key lives in Cloudflare's encrypted secret 
 
 ## License
 
-MIT. See [LICENSE](./LICENSE).
+Proprietary, all rights reserved. See [LICENSE](./LICENSE).
