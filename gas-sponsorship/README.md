@@ -1,5 +1,10 @@
 # Onara
 
+> **Talise note:** This is Talise's production gas station. Its client lives in
+> the web app at `web/lib/onara/` (client `web/lib/onara/client.ts`, public
+> entry `web/lib/onara/index.ts`), imported as `@/lib/onara` and pointed at the
+> `ONARA_URL` env var. It is based on the open "onara" project.
+
 Sui transaction sponsorship: a policy-based gas station server and TypeScript client SDK.
 
 | Package | Description |
